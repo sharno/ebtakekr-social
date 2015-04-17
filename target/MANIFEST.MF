@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Version: 1.0-SNAPSHOT
+Implementation-Vendor-Id: com.zft
+Build-Jdk: 1.7.0_71
+Built-By: sharno
+Created-By: IntelliJ IDEA
+Main-Class: ${start-class}
+
