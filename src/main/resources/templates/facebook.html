@@ -2,12 +2,16 @@
 <html>
 <head>
     <title>Facebook Login JavaScript Example</title>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 <body>
 <script>
+
+    //Get URL query params
+    var queryParam = location.search.split('user_signature=')[1];
+
     // This is called with the results from from FB.getLoginStatus().
     function statusChangeCallback(response) {
         console.log('statusChangeCallback');
@@ -69,7 +73,7 @@
             statusChangeCallback(response);
             if (response.status === 'connected') {
                 console.log(response.authResponse.accessToken);
-                $.get("web/facebook", {user_signature: "fasfas", fb: response.authResponse.accessToken}, function(data) {
+                $.get("facebook", {user_signature: queryParam, fb: response.authResponse.accessToken}, function(data) {
 //                    window.location = "/";
                     console.log(data);
                 });
