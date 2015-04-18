@@ -69,8 +69,9 @@
             statusChangeCallback(response);
             if (response.status === 'connected') {
                 console.log(response.authResponse.accessToken);
-                $.get("web/facebook", {user_signature: "", fb: response.authResponse.accessToken}, function(data) {
-                    window.location = "/";
+                $.get("web/facebook", {user_signature: "fasfas", fb: response.authResponse.accessToken}, function(data) {
+//                    window.location = "/";
+                    console.log(data);
                 });
             }
         });
