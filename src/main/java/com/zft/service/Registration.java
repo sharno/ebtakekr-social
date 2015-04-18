@@ -70,9 +70,14 @@ public class Registration {
                     response.setSessionOperation(Response.SESSION_OPERATION_END);
                     return response.toString();
                 default:
+                    System.out.println("screenid:" + screenId);
+
                     response.setText(getNotifications(sessionId, screenId));
                     response.setSessionOperation(Response.SESSION_OPERATION_CONTINUE);
                     response.setScreenId(String.valueOf(Integer.parseInt(screenId) + 1));
+
+                    System.out.println("text:" + response.getText());
+
                     return response.toString();
             }
         }
