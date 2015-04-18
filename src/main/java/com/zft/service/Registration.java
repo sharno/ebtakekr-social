@@ -42,7 +42,8 @@ public class Registration {
 
         Response response = new Response(sessionOperation, screenId);
 
-        System.out.println(from);
+        System.out.println("from:" + from);
+
         if (screenId != null){
 
             switch (screenId){
