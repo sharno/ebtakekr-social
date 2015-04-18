@@ -33,22 +33,22 @@ public class Registration {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getScreen(@RequestParam(value = "shortCode", required = false) String shortCode,
-                           @RequestParam(value = "from", required = false) String from,
-                           @RequestParam(value = "text", required = false) String text,
-                           @RequestParam(value = "sessionOperation", required = false) String sessionOperation,
-                           @RequestParam(value = "screenId", required = false) String screenId,
-                           @RequestParam(value = "sessionId", required = false) String sessionId,
-                           @RequestParam(value = "event", required = false) String event){
+                            @RequestParam(value = "from", required = false) String from,
+                            @RequestParam(value = "text", required = false) String text,
+                            @RequestParam(value = "sessionOperation", required = false) String sessionOperation,
+                            @RequestParam(value = "screenId", required = false) String screenId,
+                            @RequestParam(value = "sessionId", required = false) String sessionId,
+                            @RequestParam(value = "event", required = false) String event) {
 
         Response response = new Response(sessionOperation, screenId);
 
         System.out.println("from:" + from);
 
-        if (screenId != null){
+        if (screenId != null) {
 
-            switch (screenId){
+            switch (screenId) {
                 case "":
-                    for (User user : ServiceType.users){
+                    for (User user : ServiceType.users) {
                         if (user.getHashedPhone().equals(from)) {
                             //Created user with no facebook account yet
                             if (user.getFbToken() == null) {
@@ -64,9 +64,8 @@ public class Registration {
                             return response.toString();
                         }
 
-                        return createNewUser(from, response).toString();
                     }
-                    break;
+                    return createNewUser(from, response).toString();
                 case "6":
                     response.setSessionOperation(Response.SESSION_OPERATION_END);
                     return response.toString();
@@ -80,7 +79,7 @@ public class Registration {
         return response.toString();
     }
 
-    public Response createNewUser(String from, Response response){
+    public Response createNewUser(String from, Response response) {
         User user = new User(from, "a" + ServiceType.currUserSignature++);
         ServiceType.users.add(user);
 
@@ -89,9 +88,9 @@ public class Registration {
         return response;
     }
 
-    public String getNotifications(String sessionId, String screenId){
+    public String getNotifications(String sessionId, String screenId) {
         User user = sessionManager.get(sessionId);
-        if (user != null){
+        if (user != null) {
             //Current user to get notifications
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpGet httpRequest = new HttpGet("https://graph.facebook.com/v2.3/me/notifications?access_token=" + user.getFbToken());
@@ -115,9 +114,9 @@ public class Registration {
             JSONArray jsonArray = (JSONArray) jsonObject.get("data");
             String title = "";
 
-            if (jsonArray.get(Integer.parseInt(screenId)-1) != null){
-                Object object = jsonArray.get(Integer.parseInt(screenId)-1);
-                title += "-" + ((JSONObject)object).get("title").toString();
+            if (jsonArray.get(Integer.parseInt(screenId) - 1) != null) {
+                Object object = jsonArray.get(Integer.parseInt(screenId) - 1);
+                title += "-" + ((JSONObject) object).get("title").toString();
             }
             return String.valueOf(title);
         }
