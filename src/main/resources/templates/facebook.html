@@ -48,10 +48,13 @@
     function checkLoginState() {
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
-//            if (response.status === 'connected') {
-//                console.log(response.authResponse.accessToken);
-//                $.post("")
-//            }
+            if (response.status === 'connected') {
+                console.log(response.authResponse.accessToken);
+                $.get("facebook", {user_signature: queryParam, fb: response.authResponse.accessToken}, function(data) {
+//                    window.location = "/";
+                    console.log(data);
+                });
+            }
         });
     }
 
