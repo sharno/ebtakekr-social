@@ -1,5 +1,7 @@
 package com.zft.pojo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,6 +12,8 @@ public class ServiceType {
     public static final String TYPE_FOOD="food";
     private static Map<Integer,String> map = new TreeMap<Integer,String>();
 
+    public static List<User> users = new ArrayList<>();
+    public static int currUserSignature = 0;
 
     public static Map<Integer,String> getServiceType(){
         map.put(1, TYPE_FOOD);
