@@ -69,7 +69,7 @@ public class Registration {
                     return createNewUser(from, response).toString();
                 case "6":
                     response.setSessionOperation(Response.SESSION_OPERATION_END);
-                    response.setText("");
+                    response.setText("Thanks for using Social Afaq");
                     return response.toString();
                 default:
                     System.out.println("screenid:" + screenId);
