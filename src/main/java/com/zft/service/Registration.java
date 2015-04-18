@@ -90,7 +90,7 @@ public class Registration {
         User user = new User(from, "a" + ServiceType.currUserSignature++);
         ServiceType.users.add(user);
 
-        response.setText("Please, register your facebook account with your id on the website. Your id is " + user.getUserSignature());
+        response.setText("Register your Facebook with your id on the website. Your id is " + user.getUserSignature());
         response.setSessionOperation(Response.SESSION_OPERATION_END);
         return response;
     }
