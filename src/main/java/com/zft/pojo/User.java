@@ -8,6 +8,17 @@ public class User {
     private String userSignature;
     private String fbToken;
 
+    public User(String hashedPhone, String userSignature) {
+        this.hashedPhone = hashedPhone;
+        this.userSignature = userSignature;
+    }
+
+    public User(String hashedPhone, String userSignature, String fbToken) {
+        this.hashedPhone = hashedPhone;
+        this.userSignature = userSignature;
+        this.fbToken = fbToken;
+    }
+
     public String getHashedPhone() {
         return hashedPhone;
     }

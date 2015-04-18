@@ -19,6 +19,8 @@ import javax.servlet.ServletContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Rainfall on 4/17/2015.
@@ -26,6 +28,8 @@ import java.io.InputStreamReader;
 @RestController
 @RequestMapping("/")
 public class Registration {
+
+    public static Map<String, User> sessionManager = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public String getScreen(@RequestParam(value = "shortCode", required = false) String shortCode,
@@ -38,52 +42,84 @@ public class Registration {
 
         Response response = new Response(sessionOperation, screenId);
 
-        for (User user : ServiceType.users){
-            if (user.getHashedPhone().equals(from))
-            {
-                //Created user with no facebook account yet
-                if(user.getFbToken() == null){
-                    response.setText("Please, register your facebook account with your id on the website. Your id is " + user.getUserSignature());
+        if (screenId != null){
+
+            switch (screenId){
+                case "":
+                    for (User user : ServiceType.users){
+                        if (user.getHashedPhone().equals(from)) {
+                            //Created user with no facebook account yet
+                            if (user.getFbToken() == null) {
+                                response.setText("Please, register your facebook account with your id on the website. Your id is " + user.getUserSignature());
+                                response.setSessionOperation(Response.SESSION_OPERATION_END);
+                                return response.toString();
+                            }
+
+                            sessionManager.put(sessionId, user);
+                            response.setText("Social Afaq. Send 1 to get next notification.");
+                            response.setSessionOperation(Response.SESSION_OPERATION_CONTINUE);
+                            response.setScreenId("1");
+                            return response.toString();
+                        }
+
+                        return createNewUser(from, response).toString();
+                    }
+                    break;
+                case "6":
                     response.setSessionOperation(Response.SESSION_OPERATION_END);
                     return response.toString();
-                }
-
-                //Current user to get notifications
-                HttpClient httpClient = HttpClientBuilder.create().build();
-                HttpGet httpRequest = new HttpGet("https://graph.facebook.com/v2.3/me/notifications?access_token=" + user.getFbToken());
-                HttpResponse httpResponse = null;
-                BufferedReader responseContent = null;
-                StringBuffer result = null;
-                try {
-                    httpResponse = httpClient.execute(httpRequest);
-                    responseContent = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-                    result = new StringBuffer();
-                    String line = "";
-
-                    while ((line = responseContent.readLine()) != null)
-                        result.append(line);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                JSONObject jsonObject = (JSONObject) JSONValue.parse(String.valueOf(result));
-                JSONArray jsonArray = (JSONArray) jsonObject.get("data");
-                String title = "";
-                for (Object object : jsonArray){
-                    title += "-" + ((JSONObject)object).get("title").toString();
-                }
-                return String.valueOf(title);
+                default:
+                    response.setText(getNotifications(sessionId, screenId));
+                    response.setSessionOperation(Response.SESSION_OPERATION_CONTINUE);
+                    response.setScreenId(String.valueOf(Integer.parseInt(screenId) + 1));
+                    return response.toString();
             }
         }
+        return response.toString();
+    }
 
-        //New User
-        User user = new User();
-        user.setHashedPhone(from);
-        user.setUserSignature("a" + ServiceType.currUserSignature++);
+    public Response createNewUser(String from, Response response){
+        User user = new User(from, "a" + ServiceType.currUserSignature++);
+        ServiceType.users.add(user);
 
         response.setText("Please, register your facebook account with your id on the website. Your id is " + user.getUserSignature());
         response.setSessionOperation(Response.SESSION_OPERATION_END);
-        return response.toString();
+        return response;
+    }
+
+    public String getNotifications(String sessionId, String screenId){
+        User user = sessionManager.get(sessionId);
+        if (user != null){
+            //Current user to get notifications
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            HttpGet httpRequest = new HttpGet("https://graph.facebook.com/v2.3/me/notifications?access_token=" + user.getFbToken());
+            HttpResponse httpResponse = null;
+            BufferedReader responseContent = null;
+            StringBuffer result = null;
+            try {
+                httpResponse = httpClient.execute(httpRequest);
+                responseContent = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+                result = new StringBuffer();
+                String line = "";
+
+                while ((line = responseContent.readLine()) != null)
+                    result.append(line);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(String.valueOf(result));
+            JSONArray jsonArray = (JSONArray) jsonObject.get("data");
+            String title = "";
+
+            if (jsonArray.get(Integer.parseInt(screenId)-1) != null){
+                Object object = jsonArray.get(Integer.parseInt(screenId)-1);
+                title += "-" + ((JSONObject)object).get("title").toString();
+            }
+            return String.valueOf(title);
+        }
+
+        return null;
     }
 }

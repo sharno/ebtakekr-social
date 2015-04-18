@@ -18,11 +18,6 @@ public class Login {
 
     @RequestMapping(method = RequestMethod.GET, value = "/signature")
     public String loginSignature(@RequestParam(value = "user_signature") String userSignature){
-        //TODO: remove this
-        User userTemp = new User();
-        userTemp.setUserSignature("hos");
-        userTemp.setHashedPhone("12");
-        ServiceType.users.add(userTemp);
         for (User user : ServiceType.users){
             if (user.getUserSignature().equals(userSignature))
                 return "facebook";
