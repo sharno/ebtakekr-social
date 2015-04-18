@@ -52,7 +52,7 @@ public class Registration {
                         if (user.getHashedPhone().equals(from)) {
                             //Created user with no facebook account yet
                             if (user.getFbToken() == null) {
-                                response.setText("Please, register your facebook account with your id on the website. Your id is " + user.getUserSignature());
+                                response.setText("Register your Facebook with your id on the website. Your id is " + user.getUserSignature());
                                 response.setSessionOperation(Response.SESSION_OPERATION_END);
                                 return response.toString();
                             }
