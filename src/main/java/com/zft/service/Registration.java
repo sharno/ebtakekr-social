@@ -68,6 +68,7 @@ public class Registration {
                     return createNewUser(from, response).toString();
                 case "6":
                     response.setSessionOperation(Response.SESSION_OPERATION_END);
+                    response.setText("");
                     return response.toString();
                 default:
                     System.out.println("screenid:" + screenId);
