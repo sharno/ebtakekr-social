@@ -123,7 +123,7 @@ public class Registration {
                 Object object = jsonArray.get(Integer.parseInt(screenId) - 1);
                 title += "-" + ((JSONObject) object).get("title").toString();
             }
-            return String.valueOf(title);
+            return String.valueOf(title).replaceAll("\"","");
         }
 
         return null;
